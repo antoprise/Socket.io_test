@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Real time application</title>
+    <meta charset="utf-8">
+</head>
+
+<!-- on เชื่อมต่อและการทำงานทั่วไป -->
+<!-- ตั้งชื่่อ, เริ่มต้นแชท,{ชื่อ : ข้อความที่เราพิมพ์},กระจาย -->
+<!-- emit คือการกระจายข้อมูล -->
+<!--connected emit -> group -->
+
+<body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        function setUsername() {
+            socket.emit('setUsername', document.getElementById('name').value);
+        };
+        var user;
+        socket.on('userExists', function (data) {
+            document.getElementById('error-container').innerHTML = data;
+        });
+        socket.on('userSet', function (data) {
+            user = data.username;
+            document.body.innerHTML = '<input type ="text" id="message">\
+            <button type="button" name= "button" onclick="sendMessage()">ส่ง</button>\
+            <div id = "message-container"></div>'
+        });
+
+        function sendMessage() {
+            var msg = document.getElementById('message').value;
+            if (msg) {
+                socket.emit('msg', {
+                    message: msg,
+                    user: user
+                });
+            }
+        }
+        socket.on('newmsg', (data) => {
+            if (user) {
+                document.getElementById('message-container').innerHTML += '<div><b>' +
+                    data.user + '</b>: ' + data.message + '</div>';
+            }
+        })
+
+     /*   socket.on('broadcast', (data) => {
+            document.body.innerHTML = '';
+            document.write(data.message);
+        });*/
+    </script>
+
+    <body>
+        <div id="error-container"></div>
+        <input id="name" type="text" name="name" value="" placeholder="INSERT YOUR NAME">
+        <button type="button" name="button" onclick="setUsername()">SUBMIT</button>
+        <h1>Hello World</h1>
+    </body>
+
+</body>
+
+</html>
