@@ -9,6 +9,10 @@ app.get('/', (req, res) => {
     res.sendfile(__dirname + '/index.html');
 });
 
+app.get('/users',(req,res) => {
+    res.console.log('Hello user')
+});
+
 
 users = []; // เก็บข้อมูลของ user ที่เชื่อมค่อ
 io.on('connection', (socket) => {
